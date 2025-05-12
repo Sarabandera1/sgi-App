@@ -4,11 +4,11 @@ using sgi-App.Models;
 
 namespace sgi-App.Repositorios
 {
-    public class repoclientes : Irepo<Cliente>
+    public class Repoclientes : Irepo<Cliente>
     {
         private readonly repotercero _repotercero;
 
-        public repoclientes()
+        public Repoclientes()
         {
             _repotercero= new repotercero();
         }

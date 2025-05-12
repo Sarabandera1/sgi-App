@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace sgi-App.infrastructure.repositorios
- public class MovimientoRepository : IRepository<Movimiento>
+ public class Repomovimientos : IRepository<Movimiento>
     {
-        private readonly ProductoRepository _productoRepository;
+        private readonly Repoproductos _repoproductos;
 
-        public MovimientoRepository()
+        public Repomovimientos()
         {
-            _productoRepository = new ProductoRepository();
+            _repoproductos = new Repoproductos();
         }
 
         public async Task<IEnumerable<Movimiento>> GetAllAsync()

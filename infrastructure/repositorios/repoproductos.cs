@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace sgi-App.infrastructure.repositorios
-    public class ProductoRepository : IRepository<Producto>
+
+    public class Repoproductos: IRepository<Producto>
     {
         public async Task<IEnumerable<Producto>> GetAllAsync()
         {

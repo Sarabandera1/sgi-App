@@ -8,11 +8,11 @@ namespace sgi-App.UI
 {
     public class MenuProductos
     {
-        private readonly ProductoRepository _productoRepository;
+        private readonly Repoproductos _repoproductos;
         
         public MenuProductos()
         {
-            _productoRepository = new ProductoRepository();
+            _repoproductos = new Repoproductos();
         }
         
         public void MostrarMenu()
@@ -22,7 +22,7 @@ namespace sgi-App.UI
             while (!regresar)
             {
                 Console.Clear();
-                MenuPrincipal.MostrarEncabezado("GESTIÓN DE PRODUCTOS");
+                menuPrincipal.MostrarEncabezado("GESTIÓN DE PRODUCTOS");
                 
                 Console.Clear();
                 Console.WriteLine("╔════════════════════════════════════════════════════╗");
@@ -78,7 +78,7 @@ namespace sgi-App.UI
             
             try
             {
-                var productos = await _productoRepository.GetAllAsync();
+                var productos = await _repoproductos.GetAllAsync();
                 
                 if (!productos.Any())
                 {
@@ -117,7 +117,7 @@ namespace sgi-App.UI
             
             try
             {
-                var producto = await _productoRepository.GetByIdAsync(id);
+                var producto = await _repoproductos.GetByIdAsync(id);
                 
                 if (producto == null)
                 {
@@ -165,7 +165,7 @@ namespace sgi-App.UI
                 string id = MenuPrincipal.LeerEntrada("\nIngrese el ID del producto: ");
                 
                 // Verificar si ya existe
-                var existe = await _productoRepository.GetByIdAsync(id);
+                var existe = await _repoproductos.GetByIdAsync(id);
                 if (existe != null)
                 {
                     MenuPrincipal.MostrarMensaje("\nError: Ya existe un producto con ese ID.", ConsoleColor.Red);
@@ -191,7 +191,7 @@ namespace sgi-App.UI
                     CodigoBarra = codigoBarra
                 };
                 
-                bool resultado = await _productoRepository.InsertAsync(producto);
+                bool resultado = await _repoproductos.InsertAsync(producto);
                 
                 if (resultado)
                 {
@@ -220,7 +220,7 @@ namespace sgi-App.UI
             
             try
             {
-                var producto = await _productoRepository.GetByIdAsync(id);
+                var producto = await _repoproductos.GetByIdAsync(id);
                 
                 if (producto == null)
                 {
@@ -265,7 +265,7 @@ namespace sgi-App.UI
                     
                     producto.FechaActualizacion = DateTime.Now;
                     
-                    bool resultado = await _productoRepository.UpdateAsync(producto);
+                    bool resultado = await _repoproductos.UpdateAsync(producto);
                     
                     if (resultado)
                     {
@@ -295,7 +295,7 @@ namespace sgi-App.UI
             
             try
             {
-                var producto = await _productoRepository.GetByIdAsync(id);
+                var producto = await _repoproductos.GetByIdAsync(id);
                 
                 if (producto == null)
                 {
@@ -309,7 +309,7 @@ namespace sgi-App.UI
                     
                     if (confirmacion.ToUpper() == "S")
                     {
-                        bool resultado = await _productoRepository.DeleteAsync(id);
+                        bool resultado = await _repoproductos.DeleteAsync(id);
                         
                         if (resultado)
                         {
@@ -342,7 +342,7 @@ namespace sgi-App.UI
             
             try
             {
-                var productos = await _productoRepository.GetProductosBajoStockAsync();
+                var productos = await _repoproductos.GetProductosBajoStockAsync();
                 
                 if (!productos.Any())
                 {

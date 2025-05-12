@@ -9,13 +9,13 @@ namespace sgi-App.UI
 {
     public class MenuCompra
     {
-        private readonly Repocompras _Repocompras;
-        private readonly Repoproductos _Repoproductos;
+        private readonly Repocompras _repocompras;
+        private readonly Repoproductos _repoproductos;
         
         public MenuCompra()
         {
-            _Repocompras = new Repocompras();
-            _Repoproductos = new Repoproductos();
+            _repocompras = new Repocompras();
+            _repoproductos = new Repoproductos();
         }
         
         public void MostrarMenu()
@@ -190,7 +190,7 @@ namespace sgi-App.UI
                     string productoId = MenuPrincipal.LeerEntrada("\nID del Producto: ");
                     
                     // Verificar si el producto existe
-                    var producto = await _Repoproductos.GetByIdAsync(productoId);
+                    var producto = await _repoproductos.GetByIdAsync(productoId);
                     if (producto == null)
                     {
                         MenuPrincipal.MostrarMensaje("\nEl producto no existe.", ConsoleColor.Yellow);

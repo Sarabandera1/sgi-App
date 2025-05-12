@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace sgi-App.infrastructure.repositorios
-    public class TerceroRepository : IRepository<Tercero>
+    public class Repoterceros : IRepository<Tercero>
     {
         public async Task<IEnumerable<Tercero>> GetAllAsync()
         {

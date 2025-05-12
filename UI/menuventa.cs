@@ -9,15 +9,15 @@ namespace sgi-App.UI
 {
     public class MenuVentas
     {
-        private readonly VentaRepository _ventaRepository;
-        private readonly ProductoRepository _productoRepository;
-        private readonly PlanRepository _planRepository;
+        private readonly Repoventas _repoventas;
+        private readonly Repoproductos _repoproductos;
+        private readonly Repoplanes _repoplanes;
         
         public MenuVentas()
         {
-            _ventaRepository = new VentaRepository();
-            _productoRepository = new ProductoRepository();
-            _planRepository = new PlanRepository();
+            _repoproductos = new Repoproductos();
+            _repoproductos = new Repoproductos();
+            _repoplanes = new Repoplanes();
         }
         
         public void MostrarMenu()

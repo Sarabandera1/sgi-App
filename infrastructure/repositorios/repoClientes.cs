@@ -8,11 +8,11 @@ namespace sgi_App.Infrastructure.Repositorios;
 
 public class lmpClienteRepository : IGenericRepository<Cliente>, IClienteRepository
 {
-    private readonly ConexionSingleton _conexion;
+    private readonly Conexionmysql _conexion;
 
     public lmpClienteRepository(string connectionString)
     {
-        _conexion = ConexionSingleton.Instancia(connectionString);
+        _conexion = Conexionmysql.Instancia(connectionString);
     }
 
     public List<Cliente> ObtenerTodos()

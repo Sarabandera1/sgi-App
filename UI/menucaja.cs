@@ -8,11 +8,11 @@ namespace sgi-App.UI
 {
     public class MenuCaja
     {
-        private readonly MovimientoCajaRepository _repositorioMovimientos;
+        private readonly Repomovimientos _repomovimientos;
         
         public MenuCaja()
         {
-            _repositorioMovimientos = new MovimientoCajaRepository();
+            _repomovimientos = new Repomovimientos();
         }
         
         public void MostrarMenu()

@@ -9,7 +9,7 @@ namespace sgi-App.UI
         private readonly MenuVentas _menuVentas;
         private readonly MenuCompra _menuCompra;
         private readonly MenuCaja _menuCaja;
-        private readonly MenuPlanes _menuPlanes;
+        private readonly MenuPlan _menuPlan;
         
         public MenuPrincipal()
         {
@@ -17,7 +17,7 @@ namespace sgi-App.UI
             _menuVentas = new MenuVentas();
             _menuCompra = new MenuCompra();
             _menuCaja = new MenuCaja();
-            _menuPlanes = new MenuPlanes();
+            _menuPlan = new MenuPlan();
         }
         
         public void MostrarMenu()
@@ -60,7 +60,7 @@ namespace sgi-App.UI
                         _menuCaja.MostrarMenu();
                         break;
                     case "5":
-                        _menuPlanes.MostrarMenu();
+                        _menuPlan.MostrarMenu();
                         break;
                     case "0":
                         salir = true;
