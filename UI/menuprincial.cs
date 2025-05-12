@@ -7,7 +7,7 @@ namespace sgi-App.UI
     {
         private readonly MenuProductos _menuProductos;
         private readonly MenuVentas _menuVentas;
-        private readonly MenuCompras _menuCompras;
+        private readonly MenuCompra _menuCompra;
         private readonly MenuCaja _menuCaja;
         private readonly MenuPlanes _menuPlanes;
         
@@ -15,7 +15,7 @@ namespace sgi-App.UI
         {
             _menuProductos = new MenuProductos();
             _menuVentas = new MenuVentas();
-            _menuCompras = new MenuCompras();
+            _menuCompra = new MenuCompra();
             _menuCaja = new MenuCaja();
             _menuPlanes = new MenuPlanes();
         }
@@ -27,7 +27,7 @@ namespace sgi-App.UI
             while (!salir)
             {
                 Console.Clear();
-                MostrarEncabezado("SISTEMA DE GESTIÓN DE COMPRAS E INVENTARIO");
+                MostrarEncabezado("GESTIÓN DE COMPRAS E INVENTARIO");
                 
                 Console.Clear();
                 Console.WriteLine("╔════════════════════════════════════════════╗");

@@ -9,20 +9,20 @@ namespace sgi-App.UI
 {
     public class MenuPlanes
     {
-        private readonly PlanRepository _planRepository;
-        private readonly ProductoRepository _productoRepository;
+        private readonly PlanRepository _almacenPlanes;
+        private readonly ProductoRepository _almacenProductos;
         
         public MenuPlanes()
         {
-            _planRepository = new PlanRepository();
-            _productoRepository = new ProductoRepository();
+            _almacenPlanes = new PlanRepository();
+            _almacenProductos = new ProductoRepository();
         }
         
         public void MostrarMenu()
         {
-            bool regresar = false;
+            bool salir = false;
             
-            while (!regresar)
+            while (!salir)
             {
                 Console.Clear();
                 MenuPrincipal.MostrarEncabezado("GESTIÓN DE PLANES PROMOCIONALES");
@@ -43,51 +43,51 @@ namespace sgi-App.UI
 
                 
                 Console.Write("\nSeleccione una opción: ");
-                string opcion = Console.ReadLine() ?? "";
+                string opcionSeleccionada = Console.ReadLine() ?? "";
                 
-                switch (opcion)
+                switch (opcionSeleccionada)
                 {
                     case "1":
-                        ListarPlanes().Wait();
+                        VerTodosLosPlanes().Wait();
                         break;
                     case "2":
-                        VerDetallePlan().Wait();
+                        VerDetalleDePlan().Wait();
                         break;
                     case "3":
-                        CrearPlan().Wait();
+                        CrearNuevoPlan().Wait();
                         break;
                     case "4":
-                        ModificarPlan().Wait();
+                        ActualizarPlanExistente().Wait();
                         break;
                     case "5":
-                        EliminarPlan().Wait();
+                        EliminarPlanExistente().Wait();
                         break;
                     case "6":
-                        VerPlanesVigentes().Wait();
+                        VerPlanesActivos().Wait();
                         break;
                     case "0":
-                        regresar = true;
+                        salir = true;
                         break;
                     default:
-                        MenuPrincipal.MostrarMensaje("Opción no válida. Intente nuevamente.", ConsoleColor.Yellow);
+                        MenuPrincipal.MostrarMensaje("Opción no válida, vuelva a intentarlo", ConsoleColor.Yellow);
                         Console.ReadKey();
                         break;
                 }
             }
         }
         
-        private async Task ListarPlanes()
+        private async Task VerTodosLosPlanes()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("LISTA DE PLANES PROMOCIONALES");
             
             try
             {
-                var planes = await _planRepository.GetAllAsync();
+                var listaPlanes = await _almacenPlanes.GetAllAsync();
                 
-                if (!planes.Any())
+                if (!listaPlanes.Any())
                 {
-                    MenuPrincipal.MostrarMensaje("\nNo hay planes registrados.", ConsoleColor.Yellow);
+                    MenuPrincipal.MostrarMensaje("\nNo tiene planes registrados.", ConsoleColor.Yellow);
                 }
                 else
                 {
@@ -95,19 +95,19 @@ namespace sgi-App.UI
                         "ID", "Nombre", "Inicio", "Fin", "Descuento", "Estado");
                     Console.WriteLine(new string('-', 80));
                     
-                    foreach (var plan in planes)
+                    foreach (var planActual in listaPlanes)
                     {
-                        bool vigente = plan.EstaVigente();
-                        ConsoleColor color = vigente ? ConsoleColor.Green : ConsoleColor.Gray;
+                        bool estaActivo = planActual.EstaVigente();
+                        ConsoleColor colorTexto = estaActivo ? ConsoleColor.Green : ConsoleColor.Gray;
                         
-                        Console.ForegroundColor = color;
+                        Console.ForegroundColor = colorTexto;
                         Console.WriteLine("{0,-5} {1,-20} {2,-12} {3,-12} {4,-15} {5,-10}", 
-                            plan.Id, 
-                            plan.Nombre.Length > 17 ? plan.Nombre.Substring(0, 17) + "..." : plan.Nombre,
-                            plan.FechaInicio.ToString("dd/MM/yyyy"),
-                            plan.FechaFin.ToString("dd/MM/yyyy"),
-                            plan.Descuento.ToString("P"),
-                            vigente ? "VIGENTE" : "INACTIVO");
+                            planActual.Id, 
+                            planActual.Nombre.Length > 17 ? planActual.Nombre.Substring(0, 17) + "..." : planActual.Nombre,
+                            planActual.FechaInicio.ToString("dd/MM/yyyy"),
+                            planActual.FechaFin.ToString("dd/MM/yyyy"),
+                            planActual.Descuento.ToString("P"),
+                            estaActivo ? "VIGENTE" : "INACTIVO");
                         Console.ResetColor();
                     }
                 }
@@ -121,36 +121,36 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task VerDetallePlan()
+        private async Task VerDetalleDePlan()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("DETALLE DE PLAN PROMOCIONAL");
             
             try
             {
-                int id = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan: ");
+                int idPlan = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan: ");
                 
-                var plan = await _planRepository.GetByIdAsync(id);
+                var planBuscado = await _almacenPlanes.GetByIdAsync(idPlan);
                 
-                if (plan == null)
+                if (planBuscado == null)
                 {
                     MenuPrincipal.MostrarMensaje("\nEl plan no existe.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    bool vigente = plan.EstaVigente();
+                    bool estaActivo = planBuscado.EstaVigente();
                     
                     Console.WriteLine("\nINFORMACIÓN DEL PLAN:");
-                    Console.WriteLine($"ID: {plan.Id}");
-                    Console.WriteLine($"Nombre: {plan.Nombre}");
-                    Console.WriteLine($"Fecha Inicio: {plan.FechaInicio:dd/MM/yyyy}");
-                    Console.WriteLine($"Fecha Fin: {plan.FechaFin:dd/MM/yyyy}");
-                    Console.WriteLine($"Descuento: {plan.Descuento:P}");
-                    Console.WriteLine($"Estado: {(vigente ? "VIGENTE" : "INACTIVO")}");
+                    Console.WriteLine($"ID: {planBuscado.Id}");
+                    Console.WriteLine($"Nombre: {planBuscado.Nombre}");
+                    Console.WriteLine($"Fecha Inicio: {planBuscado.FechaInicio:dd/MM/yyyy}");
+                    Console.WriteLine($"Fecha Fin: {planBuscado.FechaFin:dd/MM/yyyy}");
+                    Console.WriteLine($"Descuento: {planBuscado.Descuento:P}");
+                    Console.WriteLine($"Estado: {(estaActivo ? "VIGENTE" : "INACTIVO")}");
                     
                     Console.WriteLine("\nPRODUCTOS EN PROMOCIÓN:");
                     
-                    if (!plan.Productos.Any())
+                    if (!planBuscado.Productos.Any())
                     {
                         MenuPrincipal.MostrarMensaje("  No hay productos asignados a este plan.", ConsoleColor.Yellow);
                     }
@@ -160,12 +160,12 @@ namespace sgi-App.UI
                             "ID", "Nombre", "Stock");
                         Console.WriteLine(new string('-', 60));
                         
-                        foreach (var producto in plan.Productos)
+                        foreach (var articulo in planBuscado.Productos)
                         {
                             Console.WriteLine("{0,-10} {1,-30} {2,-10}", 
-                                producto.Id, 
-                                producto.Nombre.Length > 27 ? producto.Nombre.Substring(0, 27) + "..." : producto.Nombre,
-                                producto.Stock);
+                                articulo.Id, 
+                                articulo.Nombre.Length > 27 ? articulo.Nombre.Substring(0, 27) + "..." : articulo.Nombre,
+                                articulo.Stock);
                         }
                     }
                 }
@@ -179,14 +179,14 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task CrearPlan()
+        private async Task CrearNuevoPlan()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("CREAR NUEVO PLAN PROMOCIONAL");
             
             try
             {
-                string nombre = MenuPrincipal.LeerEntrada("\nNombre del plan: ");
+                string nombrePlan = MenuPrincipal.LeerEntrada("\nNombre del plan: ");
                 DateTime fechaInicio = MenuPrincipal.LeerFecha("Fecha de inicio (DD/MM/AAAA): ");
                 DateTime fechaFin = MenuPrincipal.LeerFecha("Fecha de fin (DD/MM/AAAA): ");
                 
@@ -198,38 +198,38 @@ namespace sgi-App.UI
                     return;
                 }
                 
-                decimal descuento = 0;
+                decimal porcentajeDescuento = 0;
                 while (true)
                 {
                     Console.Write("Porcentaje de descuento (0-100): ");
-                    if (decimal.TryParse(Console.ReadLine(), out descuento) && descuento >= 0 && descuento <= 100)
+                    if (decimal.TryParse(Console.ReadLine(), out porcentajeDescuento) && porcentajeDescuento >= 0 && porcentajeDescuento <= 100)
                     {
                         // Convertir de porcentaje a decimal (ej: 10% -> 0.1)
-                        descuento = descuento / 100;
+                        porcentajeDescuento = porcentajeDescuento / 100;
                         break;
                     }
                     
                     MenuPrincipal.MostrarMensaje("Error: Debe ingresar un número entre 0 y 100.", ConsoleColor.Red);
                 }
                 
-                var plan = new Plan
+                var planNuevo = new Plan
                 {
-                    Nombre = nombre,
+                    Nombre = nombrePlan,
                     FechaInicio = fechaInicio,
                     FechaFin = fechaFin,
-                    Descuento = descuento,
+                    Descuento = porcentajeDescuento,
                     Productos = new List<Producto>()
                 };
                 
                 // Agregar productos al plan
-                await AgregarProductosAlPlan(plan);
+                await AsignarProductosAlPlan(planNuevo);
                 
                 // Si no se agregaron productos, confirmar si se desea guardar el plan
-                if (!plan.Productos.Any())
+                if (!planNuevo.Productos.Any())
                 {
-                    string confirmar = MenuPrincipal.LeerEntrada("\nNo se agregaron productos al plan. ¿Desea guardarlo de todas formas? (S/N): ");
+                    string confirmarGuardar = MenuPrincipal.LeerEntrada("\nNo se agregaron productos al plan. ¿Desea guardarlo de todas formas? (S/N): ");
                     
-                    if (confirmar.ToUpper() != "S")
+                    if (confirmarGuardar.ToUpper() != "S")
                     {
                         MenuPrincipal.MostrarMensaje("\nOperación cancelada.", ConsoleColor.Yellow);
                         Console.ReadKey();
@@ -237,9 +237,9 @@ namespace sgi-App.UI
                     }
                 }
                 
-                bool resultado = await _planRepository.InsertAsync(plan);
+                bool resultadoOperacion = await _almacenPlanes.InsertAsync(planNuevo);
                 
-                if (resultado)
+                if (resultadoOperacion)
                 {
                     MenuPrincipal.MostrarMensaje("\nPlan promocional creado correctamente.", ConsoleColor.Green);
                 }
@@ -257,73 +257,73 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task ModificarPlan()
+        private async Task ActualizarPlanExistente()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("MODIFICAR PLAN PROMOCIONAL");
             
             try
             {
-                int id = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan a modificar: ");
+                int idPlan = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan a modificar: ");
                 
-                var plan = await _planRepository.GetByIdAsync(id);
+                var planObjetivo = await _almacenPlanes.GetByIdAsync(idPlan);
                 
-                if (plan == null)
+                if (planObjetivo == null)
                 {
                     MenuPrincipal.MostrarMensaje("\nEl plan no existe.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    Console.WriteLine($"\nPlan actual: {plan.Nombre}");
+                    Console.WriteLine($"\nPlan actual: {planObjetivo.Nombre}");
                     
-                    string nombre = MenuPrincipal.LeerEntrada($"Ingrese el nuevo nombre ({plan.Nombre}): ");
-                    if (!string.IsNullOrWhiteSpace(nombre))
+                    string nuevoNombre = MenuPrincipal.LeerEntrada($"Ingrese el nuevo nombre ({planObjetivo.Nombre}): ");
+                    if (!string.IsNullOrWhiteSpace(nuevoNombre))
                     {
-                        plan.Nombre = nombre;
+                        planObjetivo.Nombre = nuevoNombre;
                     }
                     
-                    Console.Write($"Ingrese la nueva fecha de inicio ({plan.FechaInicio:dd/MM/yyyy}): ");
-                    string fechaInicioStr = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(fechaInicioStr) && DateTime.TryParse(fechaInicioStr, out DateTime fechaInicio))
+                    Console.Write($"Ingrese la nueva fecha de inicio ({planObjetivo.FechaInicio:dd/MM/yyyy}): ");
+                    string textoFechaInicio = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(textoFechaInicio) && DateTime.TryParse(textoFechaInicio, out DateTime nuevaFechaInicio))
                     {
-                        plan.FechaInicio = fechaInicio;
+                        planObjetivo.FechaInicio = nuevaFechaInicio;
                     }
                     
-                    Console.Write($"Ingrese la nueva fecha de fin ({plan.FechaFin:dd/MM/yyyy}): ");
-                    string fechaFinStr = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(fechaFinStr) && DateTime.TryParse(fechaFinStr, out DateTime fechaFin))
+                    Console.Write($"Ingrese la nueva fecha de fin ({planObjetivo.FechaFin:dd/MM/yyyy}): ");
+                    string textoFechaFin = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(textoFechaFin) && DateTime.TryParse(textoFechaFin, out DateTime nuevaFechaFin))
                     {
-                        plan.FechaFin = fechaFin;
+                        planObjetivo.FechaFin = nuevaFechaFin;
                     }
                     
                     // Validar que la fecha de fin sea posterior a la de inicio
-                    if (plan.FechaFin < plan.FechaInicio)
+                    if (planObjetivo.FechaFin < planObjetivo.FechaInicio)
                     {
                         MenuPrincipal.MostrarMensaje("\nError: La fecha de fin debe ser posterior a la fecha de inicio.", ConsoleColor.Red);
                         Console.ReadKey();
                         return;
                     }
                     
-                    Console.Write($"Ingrese el nuevo porcentaje de descuento ({plan.Descuento:P0}): ");
-                    string descuentoStr = Console.ReadLine() ?? "";
-                    if (!string.IsNullOrWhiteSpace(descuentoStr) && decimal.TryParse(descuentoStr, out decimal descuento) && descuento >= 0 && descuento <= 100)
+                    Console.Write($"Ingrese el nuevo porcentaje de descuento ({planObjetivo.Descuento:P0}): ");
+                    string textoDescuento = Console.ReadLine() ?? "";
+                    if (!string.IsNullOrWhiteSpace(textoDescuento) && decimal.TryParse(textoDescuento, out decimal nuevoDescuento) && nuevoDescuento >= 0 && nuevoDescuento <= 100)
                     {
-                        plan.Descuento = descuento / 100; // Convertir de porcentaje a decimal
+                        planObjetivo.Descuento = nuevoDescuento / 100; // Convertir de porcentaje a decimal
                     }
                     
                     // Preguntar si desea modificar los productos
-                    string modificarProductos = MenuPrincipal.LeerEntrada("\n¿Desea modificar los productos del plan? (S/N): ");
+                    string actualizarProductos = MenuPrincipal.LeerEntrada("\n¿Desea modificar los productos del plan? (S/N): ");
                     
-                    if (modificarProductos.ToUpper() == "S")
+                    if (actualizarProductos.ToUpper() == "S")
                     {
                         // Limpiar la lista de productos y agregar los nuevos
-                        plan.Productos.Clear();
-                        await AgregarProductosAlPlan(plan);
+                        planObjetivo.Productos.Clear();
+                        await AsignarProductosAlPlan(planObjetivo);
                     }
                     
-                    bool resultado = await _planRepository.UpdateAsync(plan);
+                    bool resultadoOperacion = await _almacenPlanes.UpdateAsync(planObjetivo);
                     
-                    if (resultado)
+                    if (resultadoOperacion)
                     {
                         MenuPrincipal.MostrarMensaje("\nPlan promocional actualizado correctamente.", ConsoleColor.Green);
                     }
@@ -342,35 +342,35 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task EliminarPlan()
+        private async Task EliminarPlanExistente()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("ELIMINAR PLAN PROMOCIONAL");
             
             try
             {
-                int id = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan a eliminar: ");
+                int idPlan = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID del plan a eliminar: ");
                 
-                var plan = await _planRepository.GetByIdAsync(id);
+                var planObjetivo = await _almacenPlanes.GetByIdAsync(idPlan);
                 
-                if (plan == null)
+                if (planObjetivo == null)
                 {
                     MenuPrincipal.MostrarMensaje("\nEl plan no existe.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    Console.WriteLine($"\nPlan a eliminar: {plan.Nombre}");
-                    Console.WriteLine($"Vigencia: {plan.FechaInicio:dd/MM/yyyy} - {plan.FechaFin:dd/MM/yyyy}");
-                    Console.WriteLine($"Descuento: {plan.Descuento:P}");
-                    Console.WriteLine($"Productos en promoción: {plan.Productos.Count}");
+                    Console.WriteLine($"\nPlan a eliminar: {planObjetivo.Nombre}");
+                    Console.WriteLine($"Vigencia: {planObjetivo.FechaInicio:dd/MM/yyyy} - {planObjetivo.FechaFin:dd/MM/yyyy}");
+                    Console.WriteLine($"Descuento: {planObjetivo.Descuento:P}");
+                    Console.WriteLine($"Productos en promoción: {planObjetivo.Productos.Count}");
                     
-                    string confirmacion = MenuPrincipal.LeerEntrada("\n¿Está seguro de eliminar este plan promocional? (S/N): ");
+                    string confirmarEliminacion = MenuPrincipal.LeerEntrada("\n¿Está seguro de eliminar este plan promocional? (S/N): ");
                     
-                    if (confirmacion.ToUpper() == "S")
+                    if (confirmarEliminacion.ToUpper() == "S")
                     {
-                        bool resultado = await _planRepository.DeleteAsync(id);
+                        bool resultadoOperacion = await _almacenPlanes.DeleteAsync(idPlan);
                         
-                        if (resultado)
+                        if (resultadoOperacion)
                         {
                             MenuPrincipal.MostrarMensaje("\nPlan promocional eliminado correctamente.", ConsoleColor.Green);
                         }
@@ -394,47 +394,47 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task VerPlanesVigentes()
+        private async Task VerPlanesActivos()
         {
             Console.Clear();
             MenuPrincipal.MostrarEncabezado("PLANES PROMOCIONALES VIGENTES");
             
             try
             {
-                var planes = await _planRepository.GetPlanesVigentesAsync();
+                var planesActivos = await _almacenPlanes.GetPlanesVigentesAsync();
                 
-                if (!planes.Any())
+                if (!planesActivos.Any())
                 {
                     MenuPrincipal.MostrarMensaje("\nNo hay planes promocionales vigentes actualmente.", ConsoleColor.Yellow);
                 }
                 else
                 {
-                    MenuPrincipal.MostrarMensaje($"\nSe encontraron {planes.Count()} planes promocionales vigentes.", ConsoleColor.Green);
+                    MenuPrincipal.MostrarMensaje($"\nSe encontraron {planesActivos.Count()} planes promocionales vigentes.", ConsoleColor.Green);
                     
                     Console.WriteLine("\n{0,-5} {1,-20} {2,-12} {3,-12} {4,-15}", 
                         "ID", "Nombre", "Inicio", "Fin", "Descuento");
                     Console.WriteLine(new string('-', 70));
                     
-                    foreach (var plan in planes)
+                    foreach (var planActual in planesActivos)
                     {
                         Console.WriteLine("{0,-5} {1,-20} {2,-12} {3,-12} {4,-15}", 
-                            plan.Id, 
-                            plan.Nombre.Length > 17 ? plan.Nombre.Substring(0, 17) + "..." : plan.Nombre,
-                            plan.FechaInicio.ToString("dd/MM/yyyy"),
-                            plan.FechaFin.ToString("dd/MM/yyyy"),
-                            plan.Descuento.ToString("P"));
+                            planActual.Id, 
+                            planActual.Nombre.Length > 17 ? planActual.Nombre.Substring(0, 17) + "..." : planActual.Nombre,
+                            planActual.FechaInicio.ToString("dd/MM/yyyy"),
+                            planActual.FechaFin.ToString("dd/MM/yyyy"),
+                            planActual.Descuento.ToString("P"));
                         
                         // Mostrar productos del plan
                         Console.WriteLine("  Productos en promoción:");
-                        if (!plan.Productos.Any())
+                        if (!planActual.Productos.Any())
                         {
                             Console.WriteLine("    No hay productos asignados a este plan.");
                         }
                         else
                         {
-                            foreach (var producto in plan.Productos)
+                            foreach (var articulo in planActual.Productos)
                             {
-                                Console.WriteLine($"    - {producto.Id}: {producto.Nombre}");
+                                Console.WriteLine($"    - {articulo.Id}: {articulo.Nombre}");
                             }
                         }
                         
@@ -451,20 +451,20 @@ namespace sgi-App.UI
             Console.ReadKey();
         }
         
-        private async Task AgregarProductosAlPlan(Plan plan)
+        private async Task AsignarProductosAlPlan(Plan planObjetivo)
         {
-            bool agregarMasProductos = true;
+            bool seguirAgregando = true;
             
             // Primero obtener todos los productos para mostrar una lista
-            var todosProductos = await _productoRepository.GetAllAsync();
+            var productosDisponibles = await _almacenProductos.GetAllAsync();
             
-            if (!todosProductos.Any())
+            if (!productosDisponibles.Any())
             {
                 MenuPrincipal.MostrarMensaje("\nNo hay productos disponibles para agregar al plan.", ConsoleColor.Yellow);
                 return;
             }
             
-            while (agregarMasProductos)
+            while (seguirAgregando)
             {
                 Console.Clear();
                 MenuPrincipal.MostrarEncabezado("AGREGAR PRODUCTOS AL PLAN");
@@ -473,38 +473,38 @@ namespace sgi-App.UI
                 Console.WriteLine("{0,-10} {1,-30} {2,-8}", "ID", "Nombre", "Stock");
                 Console.WriteLine(new string('-', 50));
                 
-                foreach (var producto in todosProductos)
+                foreach (var articulo in productosDisponibles)
                 {
                     // No mostrar productos que ya están en el plan
-                    if (!plan.Productos.Any(p => p.Id == producto.Id))
+                    if (!planObjetivo.Productos.Any(p => p.Id == articulo.Id))
                     {
                         Console.WriteLine("{0,-10} {1,-30} {2,-8}", 
-                            producto.Id, 
-                            producto.Nombre.Length > 27 ? producto.Nombre.Substring(0, 27) + "..." : producto.Nombre, 
-                            producto.Stock);
+                            articulo.Id, 
+                            articulo.Nombre.Length > 27 ? articulo.Nombre.Substring(0, 27) + "..." : articulo.Nombre, 
+                            articulo.Stock);
                     }
                 }
                 
                 // Mostrar productos ya agregados
-                if (plan.Productos.Any())
+                if (planObjetivo.Productos.Any())
                 {
                     Console.WriteLine("\nProductos ya agregados al plan:");
-                    foreach (var producto in plan.Productos)
+                    foreach (var articulo in planObjetivo.Productos)
                     {
-                        Console.WriteLine($"- {producto.Id}: {producto.Nombre}");
+                        Console.WriteLine($"- {articulo.Id}: {articulo.Nombre}");
                     }
                 }
                 
-                string productoId = MenuPrincipal.LeerEntrada("\nIngrese el ID del producto a agregar (0 para terminar): ");
+                string textoIdProducto = MenuPrincipal.LeerEntrada("\nIngrese el ID del producto a agregar (0 para terminar): ");
                 
-                if (productoId == "0")
+                if (textoIdProducto == "0")
                 {
-                    agregarMasProductos = false;
+                    seguirAgregando = false;
                 }
                 else
                 {
                     // Verificar si el producto ya está en el plan
-                    if (plan.Productos.Any(p => p.Id == productoId))
+                    if (planObjetivo.Productos.Any(p => p.Id == textoIdProducto))
                     {
                         MenuPrincipal.MostrarMensaje("\nEl producto ya está agregado al plan.", ConsoleColor.Yellow);
                         Console.ReadKey();
@@ -512,8 +512,8 @@ namespace sgi-App.UI
                     }
                     
                     // Verificar si el producto existe
-                    var producto = todosProductos.FirstOrDefault(p => p.Id == productoId);
-                    if (producto == null)
+                    var productoSeleccionado = productosDisponibles.FirstOrDefault(p => p.Id == textoIdProducto);
+                    if (productoSeleccionado == null)
                     {
                         MenuPrincipal.MostrarMensaje("\nEl producto no existe.", ConsoleColor.Yellow);
                         Console.ReadKey();
@@ -521,11 +521,11 @@ namespace sgi-App.UI
                     }
                     
                     // Agregar el producto al plan
-                    plan.Productos.Add(producto);
-                    MenuPrincipal.MostrarMensaje($"\nProducto '{producto.Nombre}' agregado al plan.", ConsoleColor.Green);
+                    planObjetivo.Productos.Add(productoSeleccionado);
+                    MenuPrincipal.MostrarMensaje($"\nProducto '{productoSeleccionado.Nombre}' agregado al plan.", ConsoleColor.Green);
                     
-                    string continuar = MenuPrincipal.LeerEntrada("\n¿Desea agregar otro producto? (S/N): ");
-                    agregarMasProductos = continuar.ToUpper() == "S";
+                    string agregarMas = MenuPrincipal.LeerEntrada("\n¿Desea agregar otro producto? (S/N): ");
+                    seguirAgregando = agregarMas.ToUpper() == "S";
                 }
             }
         }

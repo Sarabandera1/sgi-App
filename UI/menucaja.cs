@@ -8,11 +8,11 @@ namespace sgi-App.UI
 {
     public class MenuCaja
     {
-        private readonly MovimientoCajaRepository _movimientoRepository;
+        private readonly MovimientoCajaRepository _repositorioMovimientos;
         
         public MenuCaja()
         {
-            _movimientoRepository = new MovimientoCajaRepository();
+            _repositorioMovimientos = new MovimientoCajaRepository();
         }
         
         public void MostrarMenu()
@@ -44,7 +44,7 @@ namespace sgi-App.UI
                 switch (opcion)
                 {
                     case "1":
-                        AperturaCaja().Wait();
+                        InicioCaja().Wait();
                         break;
                     case "2":
                         CierreCaja().Wait();
@@ -79,7 +79,7 @@ namespace sgi-App.UI
                 DateTime fechaActual = DateTime.Today;
                 
                 // Verificar si se habilito la caja
-                var movimientosDia = await _movimientoRepository.GetMovimientosByFechaAsync(fechaActual);
+                var movimientosDia = await _repositorioMovimientos.GetMovimientosByFechaAsync(fechaActual);
                 bool yaAbierto = movimientosDia.Any(m => m.Concepto.Contains("Inicio de caja"));
                 
                 if (yaAbierto)
@@ -96,25 +96,25 @@ namespace sgi-App.UI
                         Fecha = fechaActual,
                         TipoMovimientoId = 1,
                         Valor = montoInicial,
-                        Concepto = "Apertura de caja",
+                        Concepto = "Habilitar caja",
                         TerceroId = terceroId
                     };
                     
-                    bool resultado = await _movimientoRepository.InsertAsync(movimiento);
+                    bool resultado = await _repositorioMovimientos.InsertAsync(movimiento);
                     
                     if (resultado)
                     {
-                        MenuPrincipal.MostrarMensaje("\nApertura de caja registrada correctamente.", ConsoleColor.Green);
+                        MenuPrincipal.MostrarMensaje("\n Se llevo a cabo el inicio de caja con exito", ConsoleColor.Green);
                     }
                     else
                     {
-                        MenuPrincipal.MostrarMensaje("\nNo se pudo registrar la apertura de caja.", ConsoleColor.Red);
+                        MenuPrincipal.MostrarMensaje("\nNo se registro el registro de inicio de la caja.", ConsoleColor.Red);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MenuPrincipal.MostrarMensaje($"\nError al registrar apertura de caja: {ex.Message}", ConsoleColor.Red);
+                MenuPrincipal.MostrarMensaje($"\nError al registrar el inicio de caja: {ex.Message}", ConsoleColor.Red);
             }
             
             Console.Write("\nPresione cualquier tecla para continuar...");
@@ -131,7 +131,7 @@ namespace sgi-App.UI
                 DateTime fechaActual = DateTime.Today;
                 
                 // Verificar si ya hay cierre para hoy
-                var movimientosDia = await _movimientoRepository.GetMovimientosByFechaAsync(fechaActual);
+                var movimientosDia = await _repositorioMovimientos.GetMovimientosByFechaAsync(fechaActual);
                 bool yaCerrado = movimientosDia.Any(m => m.Concepto.Contains("Cierre de caja"));
                 
                 if (yaCerrado)
@@ -140,17 +140,17 @@ namespace sgi-App.UI
                 }
                 else
                 {
-                    // Verificar si hay apertura
-                    bool hayApertura = movimientosDia.Any(m => m.Concepto.Contains("Apertura de caja"));
+                    // Verificar si se puede habilitar la caja
+                    bool Habilitar = movimientosDia.Any(m => m.Concepto.Contains("Inicio de caja"));
                     
-                    if (!hayApertura)
+                    if (!Habilitar)
                     {
-                        MenuPrincipal.MostrarMensaje("\nNo se ha registrado apertura de caja para hoy. Debe realizar la apertura primero.", ConsoleColor.Yellow);
+                        MenuPrincipal.MostrarMensaje("\n No se ha registrado nada, habilite la caja.", ConsoleColor.Yellow);
                     }
                     else
                     {
                         // Obtener saldo de la caja
-                        decimal saldoCaja = await _movimientoRepository.GetSaldoCajaAsync(fechaActual);
+                        decimal saldoCaja = await _repositorioMovimientos.GetSaldoCajaAsync(fechaActual);
                         
                         Console.WriteLine($"\nSaldo actual de caja: {saldoCaja:C}");
                         
@@ -176,7 +176,7 @@ namespace sgi-App.UI
                             TerceroId = terceroId
                         };
                         
-                        bool resultado = await _movimientoRepository.InsertAsync(movimiento);
+                        bool resultado = await _repositorioMovimientos.InsertAsync(movimiento);
                         
                         if (resultado)
                         {
@@ -236,7 +236,7 @@ namespace sgi-App.UI
                     TerceroId = terceroId
                 };
                 
-                bool resultado = await _movimientoRepository.InsertAsync(movimiento);
+                bool resultado = await _repositorioMovimientos.InsertAsync(movimiento);
                 
                 if (resultado)
                 {
@@ -268,7 +268,7 @@ namespace sgi-App.UI
                 await MostrarMovimientosDia(fecha);
                 
                 // Mostrar saldo
-                decimal saldo = await _movimientoRepository.GetSaldoCajaAsync(fecha);
+                decimal saldo = await _repositorioMovimientos.GetSaldoCajaAsync(fecha);
                 Console.WriteLine($"\nSaldo de caja para la fecha {fecha:dd/MM/yyyy}: {saldo:C}");
             }
             catch (Exception ex)
@@ -289,7 +289,7 @@ namespace sgi-App.UI
             {
                 DateTime fecha = MenuPrincipal.LeerFecha("\nIngrese la fecha (DD/MM/AAAA): ");
                 
-                decimal saldo = await _movimientoRepository.GetSaldoCajaAsync(fecha);
+                decimal saldo = await _repositorioMovimientos.GetSaldoCajaAsync(fecha);
                 
                 Console.WriteLine($"\nSaldo de caja para la fecha {fecha:dd/MM/yyyy}: {saldo:C}");
             }
@@ -304,7 +304,7 @@ namespace sgi-App.UI
         
         private async Task MostrarMovimientosDia(DateTime fecha)
         {
-            var movimientos = await _movimientoRepository.GetMovimientosByFechaAsync(fecha);
+            var movimientos = await _repositorioMovimientos.GetMovimientosByFechaAsync(fecha);
             
             if (!movimientos.Any())
             {

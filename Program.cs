@@ -14,11 +14,11 @@ namespace sgi_App
         {
             try
             {
-                Console.WriteLine("🔄 Probando conexión a la base de datos MySQL...");
+                Console.WriteLine(" Probando conexión a la base de datos MySQL...");
                 Conexionmysql conexion = new Conexionmysql();
                 bool resultado = conexion.ProbarConexion();
 
-                Console.WriteLine(resultado ? "✅ Todo correcto." : "❌ Falló la prueba.");
+                Console.WriteLine(resultado ? " Todo correcto." :  "Falló la prueba.");
 
                 // Si la conexión fue exitosa, mostrar el menú
                 if (resultado)
@@ -30,7 +30,7 @@ namespace sgi_App
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"❌ Error fatal en la aplicación: {ex.Message}");
+                Console.WriteLine($" Error fatal en la aplicación: {ex.Message}");
                 Console.ResetColor();
             }
         }

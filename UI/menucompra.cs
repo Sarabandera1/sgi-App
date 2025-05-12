@@ -7,15 +7,15 @@ using sgi-App.UI.Repositories;
 
 namespace sgi-App.UI
 {
-    public class MenuCompras
+    public class MenuCompra
     {
-        private readonly CompraRepository _compraRepository;
-        private readonly ProductoRepository _productoRepository;
+        private readonly Repocompras _Repocompras;
+        private readonly Repoproductos _Repoproductos;
         
-        public MenuCompras()
+        public MenuCompra()
         {
-            _compraRepository = new CompraRepository();
-            _productoRepository = new ProductoRepository();
+            _Repocompras = new Repocompras();
+            _Repoproductos = new Repoproductos();
         }
         
         public void MostrarMenu()
@@ -69,7 +69,7 @@ namespace sgi-App.UI
             
             try
             {
-                var compras = await _compraRepository.GetAllAsync();
+                var compras = await _Repocompras.GetAllAsync();
                 
                 if (!compras.Any())
                 {
@@ -114,7 +114,7 @@ namespace sgi-App.UI
             {
                 int id = MenuPrincipal.LeerEnteroPositivo("\nIngrese el ID de la compra: ");
                 
-                var compra = await _compraRepository.GetByIdAsync(id);
+                var compra = await _Repocompras.GetByIdAsync(id);
                 
                 if (compra == null)
                 {
@@ -190,7 +190,7 @@ namespace sgi-App.UI
                     string productoId = MenuPrincipal.LeerEntrada("\nID del Producto: ");
                     
                     // Verificar si el producto existe
-                    var producto = await _productoRepository.GetByIdAsync(productoId);
+                    var producto = await _Repoproductos.GetByIdAsync(productoId);
                     if (producto == null)
                     {
                         MenuPrincipal.MostrarMensaje("\nEl producto no existe.", ConsoleColor.Yellow);
@@ -254,7 +254,7 @@ namespace sgi-App.UI
                 
                 if (confirmar.ToUpper() == "S")
                 {
-                    bool resultado = await _compraRepository.InsertAsync(compra);
+                    bool resultado = await _Repocompras.InsertAsync(compra);
                     
                     if (resultado)
                     {
@@ -267,12 +267,12 @@ namespace sgi-App.UI
                 }
                 else
                 {
-                    MenuPrincipal.MostrarMensaje("\nOperación cancelada.", ConsoleColor.Yellow);
+                    MenuPrincipal.MostrarMensaje("\nNo valido", ConsoleColor.Yellow);
                 }
             }
             catch (Exception ex)
             {
-                MenuPrincipal.MostrarMensaje($"\nError al registrar la compra: {ex.Message}", ConsoleColor.Red);
+                MenuPrincipal.MostrarMensaje($"\nError de registro de compra: {ex.Message}", ConsoleColor.Red);
             }
             
             Console.Write("\nPresione cualquier tecla para continuar...");
