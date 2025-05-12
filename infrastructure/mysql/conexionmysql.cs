@@ -11,57 +11,32 @@ using MySql.Data.MySqlClient;
 
 
 namespace sgi_App.infrastructure.mysql
-{
-    internal class Conexionmysql : conexion
+
+    public class conexionDingleton
     {
-        private MySqlConnection connection; 
-        private string cadenaConexion;
+        private static ConexionSingleton?_instancia;
+        private readonly string _connectionString;
+    private MySqlConnection? _conexion;
 
-        public Conexionmysql() 
-        {
-            cadenaConexion = $"Server={server};Database={database};User Id={user};Password={password};";
-            connection = new MySqlConnection(cadenaConexion);
-        }
+    private ConexionSingleton(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
 
-        public MySqlConnection GetConnection()
-        {
-            try
-            {
-                if (connection.State != System.Data.ConnectionState.Open)
-                {
-                    connection.Open();
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.ToString());
-            }
+    public static ConexionSingleton Instancia(string connectionString)
+    {
+        _instancia ??= new ConexionSingleton(connectionString);
+        return _instancia;
+    }
 
-            return connection;
-        }
+    public MySqlConnection ObtenerConexion()
+    {
+        _conexion ??= new MySqlConnection(_connectionString);
+
+        if (_conexion.State != System.Data.ConnectionState.Open)
+            _conexion.Open();
+
+        return _conexion;
     }
 }
-
-public bool ProbarConexion()
-{
-    try
-    {
-        using (var conn = GetConnection())
-        {
-            if (conn.State == System.Data.ConnectionState.Open)
-            {
-                MessageBox.Show("✅ Conexión exitosa a la base de datos.");
-                return true;
-            }
-            else
-            {
-                MessageBox.Show("❌ No se pudo abrir la conexión.");
-                return false;
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show("❌ Error de conexión: " + ex.Message);
-        return false;
-    }
+    
