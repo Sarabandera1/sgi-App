@@ -3,9 +3,19 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+<<<<<<< HEAD
     <RootNamespace>sgi_App</RootNamespace>
+=======
+>>>>>>> 2aa8f24 (feat: :sparkles:)
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+  </ItemGroup>
+
+>>>>>>> 2aa8f24 (feat: :sparkles:)
 </Project>
