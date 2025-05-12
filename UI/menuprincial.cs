@@ -72,7 +72,7 @@ namespace sgi-App.UI
                 }
             }
             
-            MostrarMensaje("\n¡Gracias por usar el Sistema de Gestión de Compras e Inventario!", ConsoleColor.Cyan);
+            MostrarMensaje("\n¡Gracias por usar nuestra gestion de inventarios!", ConsoleColor.Cyan);
         }
         
         public static void MostrarEncabezado(string titulo)
@@ -110,7 +110,7 @@ namespace sgi-App.UI
                     return valor;
                 }
                 
-                MostrarMensaje("Error: Debe ingresar un número entero positivo.", ConsoleColor.Red);
+                MostrarMensaje("Vuelva a intentarlo, ingrese un numero positivo.", ConsoleColor.Red);
             }
         }
         
@@ -124,7 +124,7 @@ namespace sgi-App.UI
                     return valor;
                 }
                 
-                MostrarMensaje("Error: Debe ingresar un número decimal positivo.", ConsoleColor.Red);
+                MostrarMensaje("Debe ingresar un número decimal positivo.", ConsoleColor.Red);
             }
         }
         
@@ -138,7 +138,7 @@ namespace sgi-App.UI
                     return fecha;
                 }
                 
-                MostrarMensaje("Error: Formato de fecha incorrecto. Use DD/MM/AAAA.", ConsoleColor.Red);
+                MostrarMensaje("No lo coloco correctamente, Use DD/MM/AAAA.", ConsoleColor.Red);
             }
         }
     }

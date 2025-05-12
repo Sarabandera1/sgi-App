@@ -4,7 +4,7 @@ using sgi-App.Domain.Ports;
 using sgi-App.Infrastructure.Mysql;
 using sgi-Appl.Data.MySqlClient;
 
-namespace sgi_App.Infrastructure.Repositories;
+namespace sgi_App.Infrastructure.Repositorios;
 
 public class lmpClienteRepository : IGenericRepository<Cliente>, IClienteRepository
 {

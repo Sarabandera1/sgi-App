@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using sgi-App.UI.Models;
-using sgi-App.UI.Repositories;
+using sgi-App.UI.Repositorios;
 
 namespace sgi-App.UI
 {

@@ -2,7 +2,7 @@ using MySql.Data.MySqlClient;
 using sgi-App.Data;
 using sgi-App.Models;
 
-namespace sgi-App.Repositories
+namespace sgi-App.Repositorios
 {
     public class repoclientes : Irepo<Cliente>
     {
@@ -79,7 +79,7 @@ namespace sgi-App.Repositories
                         FechaCompra = reader["fecha_compra"] != DBNull.Value ? Convert.ToDateTime(reader["fecha_compra"]) : null
                     };
 
-                    // Cargar datos del tercero
+            
                     cliente.Tercero = new Tercero
                     {
                         Id = cliente.TerceroId,

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using sgi-App.Models;
-using sgi-App.Repositories;
+using sgi-App.Repositorios;
 
 namespace sgi-App.UI
 {
     public class MenuPlanes
     {
-        private readonly PlanRepository _almacenPlanes;
-        private readonly ProductoRepository _almacenProductos;
+        private readonly repoplanes _almacenPlanes;
+        private readonly repoproductos _almacenProductos;
         
         public MenuPlanes()
         {
-            _almacenPlanes = new PlanRepository();
-            _almacenProductos = new ProductoRepository();
+            _almacenPlanes = new repoplanes();
+            _almacenProductos = new repoproductos();
         }
         
         public void MostrarMenu()
@@ -193,7 +193,7 @@ namespace sgi-App.UI
                 // Validar que la fecha de fin sea posterior a la de inicio
                 if (fechaFin < fechaInicio)
                 {
-                    MenuPrincipal.MostrarMensaje("\nError: La fecha de fin debe ser posterior a la fecha de inicio.", ConsoleColor.Red);
+                    MenuPrincipal.MostrarMensaje("\nVuelva a intentarlo. La fecha de fin debe ser posterior a la fecha de inicio.", ConsoleColor.Red);
                     Console.ReadKey();
                     return;
                 }
@@ -209,7 +209,7 @@ namespace sgi-App.UI
                         break;
                     }
                     
-                    MenuPrincipal.MostrarMensaje("Error: Debe ingresar un número entre 0 y 100.", ConsoleColor.Red);
+                    MenuPrincipal.MostrarMensaje("Vuelva a intentarlo. Ingresar un número entre 0 y 100.", ConsoleColor.Red);
                 }
                 
                 var planNuevo = new Plan
@@ -224,7 +224,7 @@ namespace sgi-App.UI
                 // Agregar productos al plan
                 await AsignarProductosAlPlan(planNuevo);
                 
-                // Si no se agregaron productos, confirmar si se desea guardar el plan
+                // confirmacion de plan y si lo desea guardar
                 if (!planNuevo.Productos.Any())
                 {
                     string confirmarGuardar = MenuPrincipal.LeerEntrada("\nNo se agregaron productos al plan. ¿Desea guardarlo de todas formas? (S/N): ");

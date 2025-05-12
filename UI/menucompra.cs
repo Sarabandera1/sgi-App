@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using sgi-App.UI.Models;
-using sgi-App.UI.Repositories;
+using sgi-App.UI.Repositorios;
 
 namespace sgi-App.UI
 {
@@ -165,7 +165,7 @@ namespace sgi-App.UI
             
             try
             {
-                // Capturar información general de la compra
+                // información de la compra
                 string proveedorId = MenuPrincipal.LeerEntrada("\nID del Proveedor: ");
                 string empleadoId = MenuPrincipal.LeerEntrada("ID del Empleado: ");
                 string docCompra = MenuPrincipal.LeerEntrada("Documento de compra: ");
@@ -203,7 +203,6 @@ namespace sgi-App.UI
                     int cantidad = MenuPrincipal.LeerEnteroPositivo("Cantidad: ");
                     decimal valorUnitario = MenuPrincipal.LeerDecimalPositivo("Valor unitario: ");
                     
-                    // Agregar detalle a la compra
                     compra.Detalles.Add(new DetalleCompra
                     {
                         ProductoId = productoId,
@@ -217,7 +216,7 @@ namespace sgi-App.UI
                     agregarMasProductos = respuesta.ToUpper() == "S";
                 }
                 
-                // Mostrar resumen de la compra
+                // resumen de la compra
                 Console.Clear();
                 MenuPrincipal.MostrarEncabezado("RESUMEN DE LA COMPRA");
                 
@@ -249,7 +248,6 @@ namespace sgi-App.UI
                 Console.WriteLine(new string('-', 65));
                 Console.WriteLine("{0,-47} {1,-15}", "TOTAL:", total.ToString("C"));
                 
-                // Confirmar registro
                 string confirmar = MenuPrincipal.LeerEntrada("\n¿Desea registrar esta compra? (S/N): ");
                 
                 if (confirmar.ToUpper() == "S")
