@@ -7,6 +7,7 @@ using sgi_App.infrastructure.mysql;
 
 namespace sgi_App
 {
+    // hola
     public class ProductoConsultas
     {
        private Conexionmysql ConexionMysql;
